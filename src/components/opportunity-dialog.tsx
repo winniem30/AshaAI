@@ -18,7 +18,8 @@ export function OpportunityDialog({ item, onClose }: OpportunityDialogProps) {
     const user = JSON.parse(userStr);
 
     try {
-      const response = await window.fetch("http://localhost:4000/api/send-email", {
+      const apiUrl = import.meta.env.VITE_API_URL || "/api/send-email";
+      const response = await window.fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +29,6 @@ export function OpportunityDialog({ item, onClose }: OpportunityDialogProps) {
           message: `New opportunity available: ${item.name}`,
         }),
       });
-
       if (response.ok) {
         alert("Notification sent to your email!");
       } else {

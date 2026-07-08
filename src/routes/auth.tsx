@@ -44,16 +44,21 @@ function AuthPage() {
       console.log("User:", result.user);
 
       // Send welcome email
-      await window.fetch("http://localhost:4000/api/send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: result.user.email,
-          message: "Welcome to AshaAI!",
-        }),
-      });
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "/api/send-email";
+        await window.fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: result.user.email,
+            message: "Welcome to AshaAI!",
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to send welcome email:", error);
+      }
 
       navigate({ to: "/dashboard" });
     } catch (error) {

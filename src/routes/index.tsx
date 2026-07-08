@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { VoiceChatbot } from "@/components/voice-chatbot";
+import { useLanguage } from "@/contexts/language-context";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,6 +24,13 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const categories = ["Scholarships", "Internships", "Fellowships", "Grants", "Hackathons"];
+  const { language, setLanguage, t } = useLanguage();
+  
+  const languages = [
+    { code: "english", name: "English", flag: "🇬🇧" },
+    { code: "hindi", name: "Hindi", flag: "🇮🇳" },
+    { code: "telugu", name: "Telugu", flag: "🇮🇳" },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-purple-950 text-white overflow-hidden">
@@ -80,24 +89,46 @@ function Index() {
                   to={item === "Discover" ? "/" : item === "Protection" ? "/trusted-browser" : item === "Browse" ? "/opportunities" : item === "Eligibility" ? "/eligibility" : "/"}
                   className="text-sm font-medium hover:text-purple-300 transition-colors"
                 >
-                  {item}
+                  {item === "Discover" ? t("nav.discover") : item === "Protection" ? t("nav.protection") : item === "How it works" ? t("nav.howItWorks") : item === "Browse" ? t("nav.browse") : t("nav.eligibility")}
                 </Link>
               </motion.div>
             ))}
           </div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400 }}
-          >
-            <Link
-              to="/auth"
-              search={{ mode: "login" }}
-              className="bg-white text-purple-900 px-6 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition-colors shadow-lg shadow-purple-500/30"
+          <div className="flex items-center gap-4">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400 }}
+              className="relative"
             >
-              Log In
-            </Link>
-          </motion.div>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as any)}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors appearance-none cursor-pointer pr-8"
+              >
+                {languages.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="bg-purple-900 text-white">
+                    {lang.flag} {lang.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-xs">
+                ▼
+              </div>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <Link
+                to="/auth"
+                search={{ mode: "login" }}
+                className="bg-white text-purple-900 px-6 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition-colors shadow-lg shadow-purple-500/30"
+              >
+                {t("nav.login")}
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </motion.nav>
 
@@ -114,7 +145,7 @@ function Index() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-sm font-semibold text-purple-300 mb-3 tracking-wider"
           >
-            INTRODUCING ASHAAI
+            {t("intro.title")}
           </motion.p>
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
@@ -122,10 +153,10 @@ function Index() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-5xl md:text-8xl font-extrabold leading-tight mb-6"
           >
-            Opportunity.
+            {t("hero.title")}
             <br />
             <span className="bg-gradient-to-r from-purple-400 to-white bg-clip-text text-transparent">
-              Reimagined.
+              {t("hero.subtitle")}
             </span>
           </motion.h1>
           <motion.p
@@ -134,7 +165,7 @@ function Index() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-10"
           >
-            The AI assistant that finds, verifies and ranks the world's best opportunities — in seconds.
+            {t("hero.description")}
           </motion.p>
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -151,7 +182,7 @@ function Index() {
                 to="/eligibility"
                 className="bg-white text-purple-900 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition-colors shadow-lg shadow-purple-500/30"
               >
-                Get Started
+                {t("nav.getStarted")}
               </Link>
             </motion.div>
             <motion.button
@@ -160,7 +191,7 @@ function Index() {
               transition={{ type: "spring", stiffness: 400 }}
               className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:from-purple-700 hover:to-purple-900 transition-colors shadow-lg shadow-purple-500/30"
             >
-              See what it does →
+              {t("hero.seeWhatItDoes")}
             </motion.button>
           </motion.div>
         </div>
@@ -194,11 +225,14 @@ function Index() {
               whileTap={{ scale: 0.95 }}
               className="px-6 py-3 bg-purple-500/30 backdrop-blur-sm border border-purple-400/30 rounded-full text-sm font-medium hover:bg-purple-500/40 transition-colors"
             >
-              + KEEP EXPLORING
+              {t("hero.keepExploring")}
             </motion.button>
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Voice Chatbot */}
+      <VoiceChatbot />
     </div>
   );
 }

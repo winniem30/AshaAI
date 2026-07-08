@@ -1,0 +1,490 @@
+import { createContext, useContext, useState, ReactNode } from "react";
+
+type Language = "english" | "hindi" | "telugu";
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+// Translation dictionary
+const translations: Record<Language, Record<string, string>> = {
+  english: {
+    // Navigation
+    "nav.discover": "Discover",
+    "nav.protection": "Protection",
+    "nav.howItWorks": "How it works",
+    "nav.browse": "Browse",
+    "nav.eligibility": "Eligibility",
+    "nav.login": "Log In",
+    "nav.getStarted": "Get Started",
+    "nav.dashboard": "Dashboard",
+    "nav.notifications": "Notifications",
+    "nav.admin": "Admin Panel",
+    
+    // Main page
+    "intro.title": "INTRODUCING ASHAAI",
+    "hero.title": "Opportunity.",
+    "hero.subtitle": "Reimagined.",
+    "hero.description": "The AI assistant that finds, verifies and ranks the world's best opportunities — in seconds.",
+    "hero.seeWhatItDoes": "See what it does →",
+    "hero.keepExploring": "+ KEEP EXPLORING",
+    
+    // Categories
+    "category.scholarships": "Scholarships",
+    "category.internships": "Internships",
+    "category.fellowships": "Fellowships",
+    "category.grants": "Grants",
+    "category.hackathons": "Hackathons",
+    
+    // Opportunities page
+    "opportunities.title": "Opportunities",
+    "opportunities.search": "Search opportunities...",
+    "opportunities.filter": "Filter by category",
+    "opportunities.all": "All",
+    "opportunities.deadline": "Deadline",
+    "opportuments.benefit": "Benefit",
+    "opportunities.apply": "Apply now",
+    "opportunities.view": "View Opportunity",
+    
+    // Eligibility page
+    "eligibility.title": "Find schemes you qualify for",
+    "eligibility.description": "Enter your profile details and AshaAI will analyse eligibility, rank matching schemes, and explain why you qualify.",
+    "eligibility.state": "State",
+    "eligibility.age": "Age",
+    "eligibility.gender": "Gender",
+    "eligibility.income": "Annual income (₹)",
+    "eligibility.education": "Education",
+    "eligibility.category": "Category",
+    "eligibility.occupation": "Occupation",
+    "eligibility.disability": "Disability Status",
+    "eligibility.minority": "Minority Status",
+    "eligibility.farmer": "Farmer Status",
+    "eligibility.startup": "Startup Founder",
+    "eligibility.women": "Women Entrepreneur",
+    "eligibility.rural": "Rural / Urban",
+    "eligibility.check": "Check Eligibility",
+    "eligibility.required": "All fields are required. AshaAI validates your profile before checking scheme eligibility.",
+    "eligibility.matches": "Top Matches",
+    "eligibility.bestMatches": "Best Matches for Your Occupation",
+    "eligibility.other": "Other Opportunities",
+    "eligibility.whyEligible": "Why Eligible",
+    "eligibility.whyNot": "Why Not Eligible",
+    "eligibility.documents": "Required Documents",
+    "eligibility.aiEligibility": "AI Eligibility",
+    "eligibility.perfectMatch": "Perfect Match",
+    "eligibility.match": "Match",
+    "eligibility.deadlineLabel": "Deadline",
+    
+    // Voice chatbot
+    "voice.title": "Voice Assistant",
+    "voice.youSaid": "You said:",
+    "voice.assistant": "Assistant:",
+    "voice.links": "Recommended Links:",
+    "voice.start": "Start Voice",
+    "voice.stop": "Stop Listening",
+    "voice.speaking": "Speaking...",
+
+    // Dashboard
+    "dashboard.greeting": "Good evening",
+    "dashboard.welcome": "Welcome back",
+    "dashboard.rerunEligibility": "Re-run Eligibility",
+    "dashboard.total": "Total",
+    "dashboard.opportunities": "Opportunities",
+    "dashboard.new": "New",
+    "dashboard.thisWeek": "This Week",
+    "dashboard.closing": "Closing",
+    "dashboard.soon": "Soon",
+    "dashboard.recommended": "Recommended",
+    "dashboard.forYou": "For You",
+    "dashboard.opportunityScore": "Opportunity score",
+    "dashboard.thisWeekChange": "+6 this week",
+    "dashboard.highMatch": "High match across 14 active opportunities.",
+    "dashboard.notifications": "Notifications",
+    "dashboard.viewAll": "View all",
+    "dashboard.recommendedOpportunities": "Recommended Opportunities",
+    "dashboard.personalized": "Personalized based on your profile",
+    "dashboard.viewAllOpportunities": "View all opportunities",
+    "dashboard.benefit": "Benefit",
+    "dashboard.deadline": "Deadline",
+    "dashboard.opportunityCategories": "Opportunity Categories",
+    "dashboard.liveStatus": "Live status",
+    "dashboard.updatedToday": "14 opportunities updated today.",
+
+    // Opportunities page additional
+    "opportunities.loading": "Loading opportunities...",
+    "opportunities.ministry": "Ministry:",
+    "opportunities.deadlineLabel": "Deadline:",
+    "opportunities.education": "Education:",
+    "opportunities.applyNow": "Apply Now",
+    "opportunities.markApplied": "📋 Mark Applied",
+    "opportunities.applied": "✅ Applied",
+    "opportunities.noResults": "No opportunities found. Try adjusting your search or filters.",
+    "opportunities.activePrograms": "active programs with direct apply links.",
+
+    // Notifications page
+    "notifications.inbox": "Inbox",
+    "notifications.title": "Notifications & Live Feed",
+    "notifications.recent": "Recent notifications",
+    "notifications.liveFeed": "Live Opportunity Feed",
+
+    // Admin page
+    "admin.admin": "Admin",
+    "admin.console": "Operations Console",
+    "admin.addOpportunity": "Add opportunity",
+    "admin.activeUsers": "Active users",
+    "admin.searchesToday": "Searches today",
+    "admin.popularScheme": "Popular scheme",
+    "admin.verificationRequests": "Verification requests",
+    "admin.manageOpportunities": "Manage opportunities",
+    "admin.search": "Search…",
+    "admin.scheme": "Scheme",
+    "admin.ministryLabel": "Ministry",
+    "admin.categoryLabel": "Category",
+    "admin.deadlineLabel": "Deadline",
+    "admin.editOpportunity": "Edit Opportunity",
+    "admin.addNewOpportunity": "Add New Opportunity",
+    "admin.schemeName": "Scheme Name *",
+    "admin.ministryField": "Ministry *",
+    "admin.categoryField": "Category *",
+    "admin.deadlineField": "Deadline *",
+    "admin.benefitField": "Benefit",
+    "admin.benefitDetailField": "Benefit Detail",
+    "admin.descriptionField": "Description",
+    "admin.officialUrlField": "Official URL",
+    "admin.saveChanges": "Save Changes",
+    "admin.addOpportunityBtn": "Add Opportunity",
+    "admin.cancel": "Cancel",
+    "admin.selectCategory": "Select category",
+    "admin.deadlinePlaceholder": "e.g., 2026-03-31 or Rolling",
+    "admin.benefitPlaceholder": "e.g., ₹80,000 / month",
+    "admin.urlPlaceholder": "https://...",
+  },
+  hindi: {
+    // Navigation
+    "nav.discover": "खोजें",
+    "nav.protection": "सुरक्षा",
+    "nav.howItWorks": "यह कैसे काम करता है",
+    "nav.browse": "ब्राउज़ करें",
+    "nav.eligibility": "पात्रता",
+    "nav.login": "लॉग इन",
+    "nav.getStarted": "शुरू करें",
+    "nav.dashboard": "डैशबोर्ड",
+    "nav.notifications": "सूचनाएं",
+    "nav.admin": "एडमिन पैनल",
+    
+    // Main page
+    "intro.title": "आशाएआई का परिचय",
+    "hero.title": "अवसर।",
+    "hero.subtitle": "पुनर्कल्पना।",
+    "hero.description": "वह AI सहायक जो सेकंड में दुनिया के सर्वश्रेष्ठ अवसरों को खोजता, सत्यापित करता और रैंक करता है।",
+    "hero.seeWhatItDoes": "देखें यह क्या करता है →",
+    "hero.keepExploring": "+ और एक्सप्लोर करें",
+    
+    // Categories
+    "category.scholarships": "छात्रवृत्ति",
+    "category.internships": "इंटर्नशिप",
+    "category.fellowships": "फेलोशिप",
+    "category.grants": "अनुदान",
+    "category.hackathons": "हैकाथॉन",
+    
+    // Opportunities page
+    "opportunities.title": "अवसर",
+    "opportunities.search": "अवसर खोजें...",
+    "opportunities.filter": "श्रेणी के अनुसार फ़िल्टर करें",
+    "opportunities.all": "सभी",
+    "opportunities.deadline": "समय सीमा",
+    "opportuments.benefit": "लाभ",
+    "opportunities.apply": "अभी आवेदन करें",
+    "opportunities.view": "अवसर देखें",
+    
+    // Eligibility page
+    "eligibility.title": "उन योजनाएं खोजें जिनके लिए आप पात्र हैं",
+    "eligibility.description": "अपनी प्रोफ़ाइल विवरण दर्ज करें और आशाएआई पात्रता का विश्लेषण करेगा, मिलान करने वाली योजनाओं को रैंक करेगा, और समझाएगा कि आप क्यों पात्र हैं।",
+    "eligibility.state": "राज्य",
+    "eligibility.age": "आयु",
+    "eligibility.gender": "लिंग",
+    "eligibility.income": "वार्षिक आय (₹)",
+    "eligibility.education": "शिक्षा",
+    "eligibility.category": "श्रेणी",
+    "eligibility.occupation": "व्यवसाय",
+    "eligibility.disability": "विकलांगता स्थिति",
+    "eligibility.minority": "अल्पसंख्यक स्थिति",
+    "eligibility.farmer": "किसान स्थिति",
+    "eligibility.startup": "स्टार्टअप संस्थापक",
+    "eligibility.women": "महिला उद्यमी",
+    "eligibility.rural": "ग्रामीण / शहरी",
+    "eligibility.check": "पात्रता जांचें",
+    "eligibility.required": "सभी फ़ील्ड आवश्यक हैं। आशाएआई योजना पात्रता जांचने से पहले आपकी प्रोफ़ाइल को सत्यापित करता है।",
+    "eligibility.matches": "शीर्ष मेल",
+    "eligibility.bestMatches": "आपके व्यवसाय के लिए सर्वश्रेष्ठ मेल",
+    "eligibility.other": "अन्य अवसर",
+    "eligibility.whyEligible": "पात्र क्यों हैं",
+    "eligibility.whyNot": "पात्र क्यों नहीं हैं",
+    "eligibility.documents": "आवश्यक दस्तावेज",
+    "eligibility.aiEligibility": "AI पात्रता",
+    "eligibility.perfectMatch": "परिपूर्ण मेल",
+    "eligibility.match": "मेल",
+    "eligibility.deadlineLabel": "समय सीमा",
+    
+    // Voice chatbot
+    "voice.title": "वॉइस असिस्टेंट",
+    "voice.youSaid": "आपने कहा:",
+    "voice.assistant": "सहायक:",
+    "voice.links": "अनुशंसित लिंक:",
+    "voice.start": "वॉइस शुरू करें",
+    "voice.stop": "सुनना बंद करें",
+    "voice.speaking": "बोल रहा है...",
+
+    // Dashboard
+    "dashboard.greeting": "शुभ शाम",
+    "dashboard.welcome": "वापसी पर स्वागत है",
+    "dashboard.rerunEligibility": "पात्रता पुनः जांचें",
+    "dashboard.total": "कुल",
+    "dashboard.opportunities": "अवसर",
+    "dashboard.new": "नया",
+    "dashboard.thisWeek": "इस सप्ताह",
+    "dashboard.closing": "समाप्त हो रहा",
+    "dashboard.soon": "जल्द ही",
+    "dashboard.recommended": "अनुशंसित",
+    "dashboard.forYou": "आपके लिए",
+    "dashboard.opportunityScore": "अवसर स्कोर",
+    "dashboard.thisWeekChange": "+6 इस सप्ताह",
+    "dashboard.highMatch": "14 सक्रिय अवसरों में उच्च मेल।",
+    "dashboard.notifications": "सूचनाएं",
+    "dashboard.viewAll": "सभी देखें",
+    "dashboard.recommendedOpportunities": "अनुशंसित अवसर",
+    "dashboard.personalized": "आपकी प्रोफ़ाइल के आधार पर वैयक्तिकृत",
+    "dashboard.viewAllOpportunities": "सभी अवसर देखें",
+    "dashboard.benefit": "लाभ",
+    "dashboard.deadline": "समय सीमा",
+    "dashboard.opportunityCategories": "अवसर श्रेणियां",
+    "dashboard.liveStatus": "लाइव स्थिति",
+    "dashboard.updatedToday": "आज 14 अवसर अपडेट किए गए।",
+
+    // Opportunities page additional
+    "opportunities.loading": "अवसर लोड हो रहे हैं...",
+    "opportunities.ministry": "मंत्रालय:",
+    "opportunities.deadlineLabel": "समय सीमा:",
+    "opportunities.education": "शिक्षा:",
+    "opportunities.applyNow": "अभी आवेदन करें",
+    "opportunities.markApplied": "📋 आवेदन के रूप में चिह्नित करें",
+    "opportunities.applied": "✅ आवेदन किया गया",
+    "opportunities.noResults": "कोई अवसर नहीं मिला। अपनी खोज या फ़िल्टर समायोजित करने का प्रयास करें।",
+    "opportunities.activePrograms": "सीधे आवेदन लिंक के साथ सक्रिय कार्यक्रम।",
+
+    // Notifications page
+    "notifications.inbox": "इनबॉक्स",
+    "notifications.title": "सूचनाएं और लाइव फ़ीड",
+    "notifications.recent": "हाल की सूचनाएं",
+    "notifications.liveFeed": "लाइव अवसर फ़ीड",
+
+    // Admin page
+    "admin.admin": "एडमिन",
+    "admin.console": "ऑपरेशंस कंसोल",
+    "admin.addOpportunity": "अवसर जोड़ें",
+    "admin.activeUsers": "सक्रिय उपयोगकर्ता",
+    "admin.searchesToday": "आज की खोजें",
+    "admin.popularScheme": "लोकप्रिय योजना",
+    "admin.verificationRequests": "सत्यापन अनुरोध",
+    "admin.manageOpportunities": "अवसर प्रबंधित करें",
+    "admin.search": "खोजें…",
+    "admin.scheme": "योजना",
+    "admin.ministryLabel": "मंत्रालय",
+    "admin.categoryLabel": "श्रेणी",
+    "admin.deadlineLabel": "समय सीमा",
+    "admin.editOpportunity": "अवसर संपादित करें",
+    "admin.addNewOpportunity": "नया अवसर जोड़ें",
+    "admin.schemeName": "योजना का नाम *",
+    "admin.ministryField": "मंत्रालय *",
+    "admin.categoryField": "श्रेणी *",
+    "admin.deadlineField": "समय सीमा *",
+    "admin.benefitField": "लाभ",
+    "admin.benefitDetailField": "लाभ विवरण",
+    "admin.descriptionField": "विवरण",
+    "admin.officialUrlField": "आधिकारिक URL",
+    "admin.saveChanges": "परिवर्तन सहेजें",
+    "admin.addOpportunityBtn": "अवसर जोड़ें",
+    "admin.cancel": "रद्द करें",
+    "admin.selectCategory": "श्रेणी चुनें",
+    "admin.deadlinePlaceholder": "जैसे, 2026-03-31 या रोलिंग",
+    "admin.benefitPlaceholder": "जैसे, ₹80,000 / महीना",
+    "admin.urlPlaceholder": "https://...",
+  },
+  telugu: {
+    // Navigation
+    "nav.discover": "కనుగొనండి",
+    "nav.protection": "రక్షణ",
+    "nav.howItWorks": "ఇది ఎలా పని చేస్తుంది",
+    "nav.browse": "విహరించండి",
+    "nav.eligibility": "అర్హత",
+    "nav.login": "లాగిన్",
+    "nav.getStarted": "ప్రారంభించండి",
+    "nav.dashboard": "డ్యాష్‌బోర్డ్",
+    "nav.notifications": "నోటిఫికేషన్లు",
+    "nav.admin": "అడ్మిన్ ప్యానెల్",
+    
+    // Main page
+    "intro.title": "ఆశాఏఐ పరిచయం",
+    "hero.title": "అవకాశం.",
+    "hero.subtitle": "మళ్ళీ ఊహించండి.",
+    "hero.description": "సెకన్లలో ప్రపంచంలోని ఉత్తమ అవకాశాలను కనుగొనే, ధృవీకరించే మరియు ర్యాంక్ చేసే AI అసిస్టెంట్.",
+    "hero.seeWhatItDoes": "ఇది ఏమి చేస్తుందో చూడండి →",
+    "hero.keepExploring": "+ కొనసాగించు",
+    
+    // Categories
+    "category.scholarships": "స్కాలర్‌షిప్‌లు",
+    "category.internships": "ఇంటర్న్‌షిప్‌లు",
+    "category.fellowships": "ఫెలోషిప్‌లు",
+    "category.grants": "గ్రాంట్లు",
+    "category.hackathons": "హ్యాకథాన్లు",
+    
+    // Opportunities page
+    "opportunities.title": "అవకాశాలు",
+    "opportunities.search": "అవకాశాలను శోధించండి...",
+    "opportunities.filter": "వర్గం ద్వారా ఫిల్టర్ చేయండి",
+    "opportunities.all": "అన్ని",
+    "opportunities.deadline": "గడువు",
+    "opportuments.benefit": "ప్రయోజనం",
+    "opportunities.apply": "ఇప్పుడు దరఖాస్తు చేయండి",
+    "opportunities.view": "అవకాశాన్ని చూడండి",
+    
+    // Eligibility page
+    "eligibility.title": "మీరు అర్హత కలిగి ఉన్న పథకాలను కనుగొనండి",
+    "eligibility.description": "మీ ప్రొఫైల్ వివరాలను నమోదు చేయండి మరియు ఆశాఏఐ అర్హతను విశ్లేషిస్తుంది, సరిపోలే పథకాలను ర్యాంక్ చేస్తుంది, మరియు మీరు ఎందుకు అర్హులు అని వివరిస్తుంది.",
+    "eligibility.state": "రాష్ట్రం",
+    "eligibility.age": "వయస్సు",
+    "eligibility.gender": "లింగం",
+    "eligibility.income": "వార్షిక ఆదాయం (₹)",
+    "eligibility.education": "విద్య",
+    "eligibility.category": "వర్గం",
+    "eligibility.occupation": "వృత్తి",
+    "eligibility.disability": "వికలాంగత స్థితి",
+    "eligibility.minority": "మైనారిటీ స్థితి",
+    "eligibility.farmer": "రైతు స్థితి",
+    "eligibility.startup": "స్టార్టప్ స్థాపకుడు",
+    "eligibility.women": "మహిళా ఉద్యమి",
+    "eligibility.rural": "గ్రామీణ / పట్టణ",
+    "eligibility.check": "అర్హతను తనిఖీ చేయండి",
+    "eligibility.required": "అన్ని ఫీల్డ్‌లు అవసరం. పథకా అర్హతను తనిఖీ చేయడానికి ముందు ఆశాఏఐ మీ ప్రొఫైల్‌ను ధృవీకరిస్తుంది.",
+    "eligibility.matches": "ఉత్తమ మ్యాచ్‌లు",
+    "eligibility.bestMatches": "మీ వృత్తికి ఉత్తమ మ్యాచ్‌లు",
+    "eligibility.other": "ఇతర అవకాశాలు",
+    "eligibility.whyEligible": "అర్హత ఎందుకు",
+    "eligibility.whyNot": "అర్హత ఎందుకు లేదు",
+    "eligibility.documents": "అవసరమైన పత్రాలు",
+    "eligibility.aiEligibility": "AI అర్హత",
+    "eligibility.perfectMatch": "పర్ఫెక్ట్ మ్యాచ్",
+    "eligibility.match": "మ్యాచ్",
+    "eligibility.deadlineLabel": "గడువు",
+    
+    // Voice chatbot
+    "voice.title": "వాయిస్ అసిస్టెంట్",
+    "voice.youSaid": "మీరు చెప్పారు:",
+    "voice.assistant": "అసిస్టెంట్:",
+    "voice.links": "సిఫార్సు చేసిన లింక్‌లు:",
+    "voice.start": "వాయిస్ ప్రారంభించండి",
+    "voice.stop": "వింటున్న ఆపండి",
+    "voice.speaking": "మాట్లాడుతోంది...",
+
+    // Dashboard
+    "dashboard.greeting": "శుభ సాయంత్రం",
+    "dashboard.welcome": "స్వాగతం తిరిగి",
+    "dashboard.rerunEligibility": "అర్హతను మళ్ళీ తనిఖీ చేయండి",
+    "dashboard.total": "మొత్తం",
+    "dashboard.opportunities": "అవకాశాలు",
+    "dashboard.new": "కొత్త",
+    "dashboard.thisWeek": "ఈ వారం",
+    "dashboard.closing": "ముగిసే",
+    "dashboard.soon": "త్వరలో",
+    "dashboard.recommended": "సిఫార్సు చేయబడిన",
+    "dashboard.forYou": "మీ కోసం",
+    "dashboard.opportunityScore": "అవకాశ స్కోర్",
+    "dashboard.thisWeekChange": "+6 ఈ వారం",
+    "dashboard.highMatch": "14 చురుకైన అవకాశాలలో అధిక మ్యాచ్.",
+    "dashboard.notifications": "నోటిఫికేషన్లు",
+    "dashboard.viewAll": "అన్నింటినీ చూడండి",
+    "dashboard.recommendedOpportunities": "సిఫార్సు చేయబడిన అవకాశాలు",
+    "dashboard.personalized": "మీ ప్రొఫైల్ ఆధారంగా వ్యక్తిగతీకరించబడింది",
+    "dashboard.viewAllOpportunities": "అన్ని అవకాశాలను చూడండి",
+    "dashboard.benefit": "ప్రయోజనం",
+    "dashboard.deadline": "గడువు",
+    "dashboard.opportunityCategories": "అవకాశ వర్గాలు",
+    "dashboard.liveStatus": "లైవ్ స్థితి",
+    "dashboard.updatedToday": "ఈరోజు 14 అవకాశాలు అప్‌డేట్ చేయబడ్డాయి.",
+
+    // Opportunities page additional
+    "opportunities.loading": "అవకాశాలు లోడ్ అవుతున్నాయి...",
+    "opportunities.ministry": "మంత్రిత్వం:",
+    "opportunities.deadlineLabel": "గడువు:",
+    "opportunities.education": "విద్య:",
+    "opportunities.applyNow": "ఇప్పుడు దరఖాస్తు చేయండి",
+    "opportunities.markApplied": "📋 దరఖాస్తు చేశారని గుర్తు పెట్టండి",
+    "opportunities.applied": "✅ దరఖాస్తు చేశారు",
+    "opportunities.noResults": "అవకాశాలు కనుగొనబడలేదు. మీ శోధన లేదా ఫిల్టర్‌లను సర్దుబాటు చేయండి.",
+    "opportunities.activePrograms": "ప్రత్యక్ష దరఖాస్తు లింక్‌లతో చురుకైన కార్యక్రమాలు.",
+
+    // Notifications page
+    "notifications.inbox": "ఇన్‌బాక్స్",
+    "notifications.title": "నోటిఫికేషన్లు మరియు లైవ్ ఫీడ్",
+    "notifications.recent": "ఇటీవలి నోటిఫికేషన్లు",
+    "notifications.liveFeed": "లైవ్ అవకాశ ఫీడ్",
+
+    // Admin page
+    "admin.admin": "అడ్మిన్",
+    "admin.console": "ఆపరేషన్స్ కన్సోల్",
+    "admin.addOpportunity": "అవకాశం జోడించండి",
+    "admin.activeUsers": "చురుకైన వినియోగదారులు",
+    "admin.searchesToday": "ఈరోజు శోధనలు",
+    "admin.popularScheme": "ప్రాచుర్యం పొందిన పథకం",
+    "admin.verificationRequests": "ధృవీకరణ అభ్యర్థనలు",
+    "admin.manageOpportunities": "అవకాశాలను నిర్వహించండి",
+    "admin.search": "శోధించండి…",
+    "admin.scheme": "పథకం",
+    "admin.ministryLabel": "మంత్రిత్వం",
+    "admin.categoryLabel": "వర్గం",
+    "admin.deadlineLabel": "గడువు",
+    "admin.editOpportunity": "అవకాశాన్ని సవరించండి",
+    "admin.addNewOpportunity": "కొత్త అవకాశం జోడించండి",
+    "admin.schemeName": "పథకం పేరు *",
+    "admin.ministryField": "మంత్రిత్వం *",
+    "admin.categoryField": "వర్గం *",
+    "admin.deadlineField": "గడువు *",
+    "admin.benefitField": "ప్రయోజనం",
+    "admin.benefitDetailField": "ప్రయోజన వివరాలు",
+    "admin.descriptionField": "వివరణ",
+    "admin.officialUrlField": "అధికారిక URL",
+    "admin.saveChanges": "మార్పులను సేవ్ చేయండి",
+    "admin.addOpportunityBtn": "అవకాశం జోడించండి",
+    "admin.cancel": "రద్దు చేయండి",
+    "admin.selectCategory": "వర్గాన్ని ఎంచుకోండి",
+    "admin.deadlinePlaceholder": "ఉదా., 2026-03-31 లేదా రోలింగ్",
+    "admin.benefitPlaceholder": "ఉదా., ₹80,000 / నెల",
+    "admin.urlPlaceholder": "https://...",
+  },
+};
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>("english");
+
+  const t = (key: string): string => {
+    return translations[language][key] || translations["english"][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
+  }
+  return context;
+}

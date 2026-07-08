@@ -11,6 +11,7 @@ import { opportunities } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { EligibilityResultDialog } from "@/components/eligibility-result-dialog";
 import { useNavigate } from "@tanstack/react-router";
+import { useLanguage } from "@/contexts/language-context";
 
 export const Route = createFileRoute("/eligibility")({
   head: () => ({ meta: [{ title: "Opportunities by Occupation — AshaAI" }] }),
@@ -60,6 +61,7 @@ const womenEntrepreneurOptions = ["No", "Yes"];
 const ruralUrbanOptions = ["Urban", "Rural"];
 
 function EligibilityPage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [results, setResults] = useState<typeof opportunities>([]);
   const [loading, setLoading] = useState(false);
@@ -204,17 +206,17 @@ function EligibilityPage() {
         className="p-6 md:p-10 max-w-6xl mx-auto space-y-8"
       >
         <header>
-          <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">AI Eligibility</p>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Find schemes you qualify for</h1>
+          <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{t("eligibility.aiEligibility")}</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{t("eligibility.title")}</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl">
-            Enter your profile details and AshaAI will analyse eligibility, rank matching schemes, and explain why you qualify.
+            {t("eligibility.description")}
           </p>
         </header>
 
         <form onSubmit={form.handleSubmit(handleCheckEligibility)} className="rounded-3xl bg-card ring-1 ring-black/5 p-6 md:p-8 space-y-6">
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">State</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.state")}</span>
               <select
                 {...form.register("state")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -227,13 +229,13 @@ function EligibilityPage() {
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Age</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.age")}</span>
               <Input type="number" min={16} max={100} {...form.register("age", { valueAsNumber: true })} />
               {errors.age && <p className="text-sm text-destructive mt-2">{errors.age.message}</p>}
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Gender</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.gender")}</span>
               <select
                 {...form.register("gender")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -248,13 +250,13 @@ function EligibilityPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Annual income (₹)</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.income")}</span>
               <Input type="number" min={1} step={1000} {...form.register("income", { valueAsNumber: true })} />
               {errors.income && <p className="text-sm text-destructive mt-2">{errors.income.message}</p>}
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Education</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.education")}</span>
               <select
                 {...form.register("education")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -267,7 +269,7 @@ function EligibilityPage() {
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Category</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.category")}</span>
               <select
                 {...form.register("category")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -282,7 +284,7 @@ function EligibilityPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Occupation</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.occupation")}</span>
               <select
                 {...form.register("occupation")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -295,7 +297,7 @@ function EligibilityPage() {
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Disability Status</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.disability")}</span>
               <select
                 {...form.register("disabilityStatus")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -308,7 +310,7 @@ function EligibilityPage() {
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Minority Status</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.minority")}</span>
               <select
                 {...form.register("minorityStatus")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -323,7 +325,7 @@ function EligibilityPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Farmer Status</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.farmer")}</span>
               <select
                 {...form.register("farmerStatus")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -336,7 +338,7 @@ function EligibilityPage() {
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Startup Founder</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.startup")}</span>
               <select
                 {...form.register("startupFounder")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -349,7 +351,7 @@ function EligibilityPage() {
             </label>
 
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Women Entrepreneur</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.women")}</span>
               <select
                 {...form.register("womenEntrepreneur")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -364,7 +366,7 @@ function EligibilityPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             <label className="block">
-              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Rural / Urban</span>
+              <span className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.rural")}</span>
               <select
                 {...form.register("ruralUrban")}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -378,21 +380,21 @@ function EligibilityPage() {
           </div>
 
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <p className="text-sm text-muted-foreground">All fields are required. AshaAI validates your profile before checking scheme eligibility.</p>
+            <p className="text-sm text-muted-foreground">{t("eligibility.required")}</p>
             <Button type="submit">
-              Check Eligibility
+              {t("eligibility.check")}
             </Button>
           </div>
         </form>
 
         {results.length > 0 && (
           <div className="mt-6 space-y-6">
-            <h2 className="text-2xl font-bold mb-4">Top Matches ({results.length})</h2>
+            <h2 className="text-2xl font-bold mb-4">{t("eligibility.matches")} ({results.length})</h2>
             
             {/* Occupation-relevant opportunities */}
             {results.filter((r: any) => r.isOccupationRelevant).length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-primary">Best Matches for Your Occupation</h3>
+                <h3 className="text-lg font-semibold text-primary">{t("eligibility.bestMatches")}</h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {results.filter((r: any) => r.isOccupationRelevant).map((item: any) => (
                     <div
@@ -409,12 +411,12 @@ function EligibilityPage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{item.category}</p>
-                            <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">Perfect Match</span>
+                            <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">{t("eligibility.perfectMatch")}</span>
                           </div>
                           <h3 className="mt-2 text-xl font-semibold">{item.name}</h3>
                         </div>
                         <div className={`rounded-full px-4 py-2 text-sm font-semibold ${item.calculatedScore >= 80 ? 'bg-green-100 text-green-700' : item.calculatedScore >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
-                          {item.calculatedScore}% Match
+                          {item.calculatedScore}% {t("eligibility.match")}
                         </div>
                       </div>
 
@@ -426,7 +428,7 @@ function EligibilityPage() {
                       </div>
 
                       <div className="mt-3">
-                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">Deadline</p>
+                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{t("eligibility.deadlineLabel")}</p>
                         <p className={`text-sm font-semibold ${item.deadline === 'Rolling' ? 'text-green-600' : 'text-orange-600'}`}>
                           {item.deadline}
                         </p>
@@ -434,7 +436,7 @@ function EligibilityPage() {
 
                       {item.isEligible && item.reasons.length > 0 && (
                         <div className="mt-4 p-3 bg-green-50 rounded-xl">
-                          <p className="text-xs font-mono uppercase tracking-widest text-green-700 mb-2">Why Eligible</p>
+                          <p className="text-xs font-mono uppercase tracking-widest text-green-700 mb-2">{t("eligibility.whyEligible")}</p>
                           <ul className="space-y-1">
                             {item.reasons.map((reason: string, idx: number) => (
                               <li key={idx} className="text-sm text-green-700 flex items-center gap-2">
@@ -447,7 +449,7 @@ function EligibilityPage() {
 
                       {!item.isEligible && item.failures.length > 0 && (
                         <div className="mt-4 p-3 bg-red-50 rounded-xl">
-                          <p className="text-xs font-mono uppercase tracking-widest text-red-700 mb-2">Why Not Eligible</p>
+                          <p className="text-xs font-mono uppercase tracking-widest text-red-700 mb-2">{t("eligibility.whyNot")}</p>
                           <ul className="space-y-1">
                             {item.failures.map((failure: string, idx: number) => (
                               <li key={idx} className="text-sm text-red-700 flex items-center gap-2">
@@ -459,7 +461,7 @@ function EligibilityPage() {
                       )}
 
                       <div className="mt-4">
-                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Required Documents</p>
+                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.documents")}</p>
                         <div className="flex flex-wrap gap-2">
                           {item.documents.map((doc: string, idx: number) => (
                             <span key={idx} className="px-2 py-1 bg-muted rounded-full text-xs">
@@ -480,7 +482,7 @@ function EligibilityPage() {
                           }}
                           className="flex-1 inline-flex items-center justify-center rounded-2xl bg-primary text-primary-foreground px-4 py-3 text-sm font-semibold"
                         >
-                          View Opportunity
+                          {t("opportunities.view")}
                         </button>
                         <a
                           href={item.officialUrl}
@@ -489,7 +491,7 @@ function EligibilityPage() {
                           onClick={(e) => e.stopPropagation()}
                           className="flex-1 inline-flex items-center justify-center rounded-2xl bg-foreground px-4 py-3 text-sm font-semibold text-background"
                         >
-                          Apply now
+                          {t("opportunities.apply")}
                         </a>
                       </div>
                     </div>
@@ -501,7 +503,7 @@ function EligibilityPage() {
             {/* Other opportunities */}
             {results.filter((r: any) => !r.isOccupationRelevant).length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-muted-foreground">Other Opportunities</h3>
+                <h3 className="text-lg font-semibold text-muted-foreground">{t("eligibility.other")}</h3>
                 <div className="grid gap-4 md:grid-cols-2">
                   {results.filter((r: any) => !r.isOccupationRelevant).map((item: any) => (
                     <div
@@ -520,7 +522,7 @@ function EligibilityPage() {
                           <h3 className="mt-2 text-xl font-semibold">{item.name}</h3>
                         </div>
                         <div className={`rounded-full px-4 py-2 text-sm font-semibold ${item.calculatedScore >= 80 ? 'bg-green-100 text-green-700' : item.calculatedScore >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
-                          {item.calculatedScore}% Match
+                          {item.calculatedScore}% {t("eligibility.match")}
                         </div>
                       </div>
 
@@ -532,7 +534,7 @@ function EligibilityPage() {
                       </div>
 
                       <div className="mt-3">
-                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">Deadline</p>
+                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{t("eligibility.deadlineLabel")}</p>
                         <p className={`text-sm font-semibold ${item.deadline === 'Rolling' ? 'text-green-600' : 'text-orange-600'}`}>
                           {item.deadline}
                         </p>
@@ -540,7 +542,7 @@ function EligibilityPage() {
 
                       {item.isEligible && item.reasons.length > 0 && (
                         <div className="mt-4 p-3 bg-green-50 rounded-xl">
-                          <p className="text-xs font-mono uppercase tracking-widest text-green-700 mb-2">Why Eligible</p>
+                          <p className="text-xs font-mono uppercase tracking-widest text-green-700 mb-2">{t("eligibility.whyEligible")}</p>
                           <ul className="space-y-1">
                             {item.reasons.map((reason: string, idx: number) => (
                               <li key={idx} className="text-sm text-green-700 flex items-center gap-2">
@@ -553,7 +555,7 @@ function EligibilityPage() {
 
                       {!item.isEligible && item.failures.length > 0 && (
                         <div className="mt-4 p-3 bg-red-50 rounded-xl">
-                          <p className="text-xs font-mono uppercase tracking-widest text-red-700 mb-2">Why Not Eligible</p>
+                          <p className="text-xs font-mono uppercase tracking-widest text-red-700 mb-2">{t("eligibility.whyNot")}</p>
                           <ul className="space-y-1">
                             {item.failures.map((failure: string, idx: number) => (
                               <li key={idx} className="text-sm text-red-700 flex items-center gap-2">
@@ -565,7 +567,7 @@ function EligibilityPage() {
                       )}
 
                       <div className="mt-4">
-                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Required Documents</p>
+                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{t("eligibility.documents")}</p>
                         <div className="flex flex-wrap gap-2">
                           {item.documents.map((doc: string, idx: number) => (
                             <span key={idx} className="px-2 py-1 bg-muted rounded-full text-xs">
@@ -586,7 +588,7 @@ function EligibilityPage() {
                           }}
                           className="flex-1 inline-flex items-center justify-center rounded-2xl bg-primary text-primary-foreground px-4 py-3 text-sm font-semibold"
                         >
-                          View Opportunity
+                          {t("opportunities.view")}
                         </button>
                         <a
                           href={item.officialUrl}
@@ -595,7 +597,7 @@ function EligibilityPage() {
                           onClick={(e) => e.stopPropagation()}
                           className="flex-1 inline-flex items-center justify-center rounded-2xl bg-foreground px-4 py-3 text-sm font-semibold text-background"
                         >
-                          Apply now
+                          {t("opportunities.apply")}
                         </a>
                       </div>
                     </div>

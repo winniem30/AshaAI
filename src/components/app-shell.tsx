@@ -9,22 +9,31 @@ import {
   Activity,
   Moon,
   Sun,
+  Languages,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { VoiceFab } from "./voice-fab";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../contexts/language-context";
 
 const nav = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/eligibility", label: "Eligibility Checker", icon: Sparkles },
-  { to: "/opportunities", label: "Opportunities", icon: Compass },
-  { to: "/notifications", label: "Notifications", icon: Bell },
-  { to: "/admin", label: "Admin Panel", icon: Settings2 },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, translationKey: "nav.dashboard" },
+  { to: "/eligibility", label: "Eligibility Checker", icon: Sparkles, translationKey: "nav.eligibility" },
+  { to: "/opportunities", label: "Opportunities", icon: Compass, translationKey: "nav.browse" },
+  { to: "/notifications", label: "Notifications", icon: Bell, translationKey: "nav.notifications" },
+  { to: "/admin", label: "Admin Panel", icon: Settings2, translationKey: "nav.admin" },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [darkMode, setDarkMode] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+  
+  const languages = [
+    { code: "english", name: "English", flag: "🇬🇧" },
+    { code: "hindi", name: "Hindi", flag: "🇮🇳" },
+    { code: "telugu", name: "Telugu", flag: "🇮🇳" },
+  ];
 
   useEffect(() => {
     // Check for saved preference or system preference
@@ -52,6 +61,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <span className="font-extrabold text-lg tracking-tighter">AshaAI</span>
         </Link>
+        <div className="flex items-center gap-2 px-6 py-3 border-b border-border">
+          <Languages className="size-4 text-muted-foreground" />
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as any)}
+            className="flex-1 bg-transparent text-sm font-medium focus:outline-none cursor-pointer"
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code} className="bg-background">
+                {lang.flag} {lang.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           onClick={toggleDarkMode}
           className="mx-6 p-2 rounded-lg hover:bg-muted transition-colors"
@@ -77,7 +100,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }`}
               >
                 <Icon className="size-4" />
-                {item.label}
+                {t(item.translationKey)}
               </Link>
             );
           })}
@@ -85,9 +108,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="p-4 border-t border-border">
           <div className="rounded-xl bg-primary/5 border border-primary/10 p-4">
             <div className="flex items-center gap-2 text-xs font-mono text-primary uppercase tracking-wider mb-1">
-              <Activity className="size-3" /> Live status
+              <Activity className="size-3" /> {t("dashboard.liveStatus")}
             </div>
-            <p className="text-xs text-muted-foreground">14 opportunities updated today.</p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.updatedToday")}</p>
           </div>
         </div>
       </aside>

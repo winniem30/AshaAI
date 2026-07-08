@@ -6,6 +6,7 @@ import { categories } from "@/lib/mock-data";
 import { Search, Filter, ExternalLink } from "lucide-react";
 import { OpportunityDialog } from "@/components/opportunity-dialog";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/language-context";
 
 const searchSchema = z.object({
   category: z.string().optional(),
@@ -26,6 +27,7 @@ function OppLayout() {
 }
 
 function Explorer() {
+  const { t } = useLanguage();
   const search = Route.useSearch();
   const [q, setQ] = useState(search.q ?? "");
   const [category, setCategory] = useState<string>(search.category ?? "All");
@@ -39,7 +41,8 @@ function Explorer() {
   useEffect(() => {
     async function fetchOpportunities() {
       try {
-        const response = await fetch("http://localhost:4000/api/opportunities");
+        const apiUrl = import.meta.env.VITE_API_URL || "/api/opportunities";
+        const response = await fetch(apiUrl);
         const data = await response.json();
         setOpportunities(data.opportunities || []);
       } catch (error) {
@@ -116,15 +119,15 @@ function Explorer() {
         className="p-6 md:p-10 max-w-7xl mx-auto space-y-8"
       >
         <header>
-          <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">Explorer</p>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">All Opportunities</h1>
-          <p className="text-muted-foreground mt-2">Filter, search and discover {loading ? "..." : results.length}+ active programs with direct apply links.</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{t("nav.browse")}</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{t("opportunities.title")}</h1>
+          <p className="text-muted-foreground mt-2">{t("opportunities.search")} {loading ? "..." : results.length}+ {t("opportunities.activePrograms")}</p>
         </header>
 
         {loading ? (
           <div className="text-center py-16">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <p className="mt-4 text-muted-foreground">Loading opportunities...</p>
+            <p className="mt-4 text-muted-foreground">{t("opportunities.loading")}</p>
           </div>
         ) : (
           <>
@@ -134,12 +137,12 @@ function Explorer() {
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search schemes, scholarships, ministries…"
+                  placeholder={t("opportunities.search")}
                   className="flex-1 bg-transparent py-3 focus:outline-none text-sm"
                 />
               </div>
               <select value={category} onChange={(e) => setCategory(e.target.value)} className="px-4 py-3 rounded-xl bg-muted text-sm font-medium">
-                <option>All</option>
+                <option>{t("opportunities.all")}</option>
                 {categories.map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
@@ -171,17 +174,17 @@ function Explorer() {
                       {r.benefit}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="font-medium">Ministry:</span>
+                      <span className="font-medium">{t("opportunities.ministry")}</span>
                       <span>{r.ministry}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="font-medium">Deadline:</span>
+                      <span className="font-medium">{t("opportunities.deadlineLabel")}</span>
                       <span className={r.deadline === "Rolling" ? "text-green-600" : "text-orange-600"}>
                         {r.deadline}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="font-medium">Education:</span>
+                      <span className="font-medium">{t("opportunities.education")}</span>
                       <span>{r.educationLevel}</span>
                     </div>
                   </div>
@@ -194,7 +197,7 @@ function Explorer() {
                       onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium text-sm"
                     >
-                      <ExternalLink className="size-4" /> Apply Now
+                      <ExternalLink className="size-4" /> {t("opportunities.applyNow")}
                     </a>
                     <button
                       onClick={(e) => {
@@ -207,14 +210,14 @@ function Explorer() {
                           : "text-primary"
                       }`}
                     >
-                      {appliedOpportunities.has(r.name) ? "✅ Applied" : "📋 Mark Applied"}
+                      {appliedOpportunities.has(r.name) ? t("opportunities.applied") : t("opportunities.markApplied")}
                     </button>
                   </div>
                 </motion.div>
               ))}
               {results.length === 0 && (
                 <div className="col-span-full text-center py-16 text-muted-foreground">
-                  No opportunities found. Try adjusting your search or filters.
+                  {t("opportunities.noResults")}
                 </div>
               )}
             </div>

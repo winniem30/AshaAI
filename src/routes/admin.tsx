@@ -5,6 +5,7 @@ import { Users, Activity, ShieldCheck, Search, Pencil, Trash2, Plus, X } from "l
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/language-context";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Panel — AshaAI" }] }),
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function Admin() {
+  const { t } = useLanguage();
   const [items, setItems] = useState<Opportunity[]>(opportunities);
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -117,28 +119,28 @@ function Admin() {
       <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">Admin</p>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Operations Console</h1>
+            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{t("admin.admin")}</p>
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{t("admin.console")}</h1>
           </div>
           <button onClick={handleAdd} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
-            <Plus className="size-4" /> Add opportunity
+            <Plus className="size-4" /> {t("admin.addOpportunity")}
           </button>
         </header>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Metric icon={<Users className="size-4" />} k="Active users" v="12,482" />
-          <Metric icon={<Search className="size-4" />} k="Searches today" v="48,210" />
-          <Metric icon={<Activity className="size-4" />} k="Popular scheme" v="PMRF" />
-          <Metric icon={<ShieldCheck className="size-4" />} k="Verification requests" v="2,156" />
+          <Metric icon={<Users className="size-4" />} k={t("admin.activeUsers")} v="12,482" />
+          <Metric icon={<Search className="size-4" />} k={t("admin.searchesToday")} v="48,210" />
+          <Metric icon={<Activity className="size-4" />} k={t("admin.popularScheme")} v="PMRF" />
+          <Metric icon={<ShieldCheck className="size-4" />} k={t("admin.verificationRequests")} v="2,156" />
         </div>
 
         <section className="rounded-3xl bg-card ring-1 ring-black/5 overflow-hidden">
           <div className="p-6 border-b border-border flex items-center justify-between">
-            <h2 className="font-bold">Manage opportunities</h2>
+            <h2 className="font-bold">{t("admin.manageOpportunities")}</h2>
             <div className="flex items-center gap-2 px-3 rounded-lg bg-muted">
               <Search className="size-4 text-muted-foreground" />
               <input 
-                placeholder="Search…" 
+                placeholder={t("admin.search")} 
                 className="bg-transparent py-2 text-sm focus:outline-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -148,10 +150,10 @@ function Admin() {
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-xs font-mono uppercase tracking-wider text-muted-foreground">
               <tr>
-                <th className="text-left px-6 py-3">Scheme</th>
-                <th className="text-left px-6 py-3 hidden md:table-cell">Ministry</th>
-                <th className="text-left px-6 py-3 hidden md:table-cell">Category</th>
-                <th className="text-left px-6 py-3">Deadline</th>
+                <th className="text-left px-6 py-3">{t("admin.scheme")}</th>
+                <th className="text-left px-6 py-3 hidden md:table-cell">{t("admin.ministryLabel")}</th>
+                <th className="text-left px-6 py-3 hidden md:table-cell">{t("admin.categoryLabel")}</th>
+                <th className="text-left px-6 py-3">{t("admin.deadlineLabel")}</th>
                 <th className="px-6 py-3" />
               </tr>
             </thead>
@@ -184,11 +186,11 @@ function Admin() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingItem ? "Edit Opportunity" : "Add New Opportunity"}</DialogTitle>
+            <DialogTitle>{editingItem ? t("admin.editOpportunity") : t("admin.addNewOpportunity")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Scheme Name *</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.schemeName")}</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -197,7 +199,7 @@ function Admin() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Ministry *</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.ministryField")}</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -206,40 +208,40 @@ function Admin() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Category *</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.categoryField")}</label>
               <select
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               >
-                <option value="">Select category</option>
+                <option value="">{t("admin.selectCategory")}</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Deadline *</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.deadlineField")}</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 value={formData.deadline}
                 onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                placeholder="e.g., 2026-03-31 or Rolling"
+                placeholder={t("admin.deadlinePlaceholder")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Benefit</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.benefitField")}</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 value={formData.benefit}
                 onChange={(e) => setFormData({ ...formData, benefit: e.target.value })}
-                placeholder="e.g., ₹80,000 / month"
+                placeholder={t("admin.benefitPlaceholder")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Benefit Detail</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.benefitDetailField")}</label>
               <textarea
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 value={formData.benefitDetail}
@@ -248,7 +250,7 @@ function Admin() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Description</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.descriptionField")}</label>
               <textarea
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 value={formData.description}
@@ -257,21 +259,21 @@ function Admin() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Official URL</label>
+              <label className="block text-sm font-medium mb-1">{t("admin.officialUrlField")}</label>
               <input
                 type="url"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 value={formData.officialUrl}
                 onChange={(e) => setFormData({ ...formData, officialUrl: e.target.value })}
-                placeholder="https://..."
+                placeholder={t("admin.urlPlaceholder")}
               />
             </div>
             <div className="flex gap-3 pt-4">
               <Button onClick={handleSave} className="flex-1">
-                {editingItem ? "Save Changes" : "Add Opportunity"}
+                {editingItem ? t("admin.saveChanges") : t("admin.addOpportunityBtn")}
               </Button>
               <Button onClick={() => setDialogOpen(false)} variant="outline" className="flex-1">
-                Cancel
+                {t("admin.cancel")}
               </Button>
             </div>
           </div>

@@ -12,4 +12,10 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    define: {
+      // Use environment variable for API URL, fallback to relative path for production
+      'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || ''),
+    },
+  },
 });

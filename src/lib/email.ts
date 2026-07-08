@@ -8,11 +8,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendMail(
-  to: string,
-  subject: string,
-  html: string
-) {
+export async function sendMail(to: string, subject: string, html: string): Promise<void> {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn("Email credentials not configured. Email sending will be skipped.");
+    return;
+  }
+
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -20,9 +21,8 @@ export async function sendMail(
       subject,
       html,
     });
-    console.log(`Email sent successfully to ${to}`);
   } catch (error) {
     console.error("Failed to send email:", error);
-    throw new Error("Email authentication failed. Please check EMAIL_USER and EMAIL_PASS in .env file.");
+    throw error;
   }
 }
